@@ -30,10 +30,35 @@ with everything else similar to S3.
 
 At first add new resource type:
 
+    resource_types:
+      - name: build-number-resource
+      type: docker-image
+      source:
+          repository: rosti/concourse-build-number-resource
+          tag: latest
 
 And then the resource:
 
-    
+    - name: build-number
+      type: build-number-resource
+      source:
+        endpoint: "ams3.digitaloceanspaces.com"
+        access_key: "xxxxx"
+        secret_key: "xxxxxx"
+        use_ssl: true
+        bucket: "my-bucket"
+        project: "test"
+        initial_value: 1
+        bump: false
+
+Usage in the jobs is easy:
+
+    jobs:
+      - name: some-job
+        plan:
+        - get: build-number # Read lastest build number
+        - ... something important
+        - put: build-number # Bump the build number up for next time
 
 ## Check
 
