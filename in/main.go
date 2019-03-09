@@ -33,7 +33,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	_, err = f.Write([]byte(strconv.Itoa(storage.Version.BuildNumber)))
+	_, err = f.Write([]byte(storage.Version.BuildNumber))
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -43,7 +43,7 @@ func main() {
 	buildNumber, err := storage.Get()
 
 	response := &common.InOut{
-		Version: common.Version{buildNumber},
+		Version: common.Version{strconv.Itoa(buildNumber)},
 	}
 
 	data, err := json.Marshal(response)

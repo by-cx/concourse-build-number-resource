@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 
 	"github.com/by-cx/concourse-build-number-resource/common"
 )
@@ -35,7 +36,7 @@ func main() {
 	buildNumber, err := storage.Get()
 
 	response := &common.InOut{
-		Version: common.Version{buildNumber},
+		Version: common.Version{strconv.Itoa(buildNumber)},
 	}
 
 	data, err := json.Marshal(response)

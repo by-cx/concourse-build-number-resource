@@ -1,6 +1,8 @@
 // Package common contains common code for all three Concourse commands (check, in, out).
 package common
 
+import "strconv"
+
 // ObjectName where build number is saved
 const ObjectName = "build-number"
 
@@ -18,7 +20,7 @@ type InOut struct {
 
 // Version is used in output and input of the check command. It contains version compatible with Concourse format.
 type Version struct {
-	BuildNumber int `json:"num"`
+	BuildNumber string `json:"num"`
 }
 
 // Params is coming from Concurs in "in" and "out" commands
@@ -34,7 +36,7 @@ type SourceS3 struct {
 	UseSSL       bool   `json:"use_ssl" default:"true"`    // True of SSL required, by default enabled
 	Bucket       string `json:"bucket"`                    // Name of the bucket
 	Project      string `json:"project"`                   // Project name - prefix where the object with build number will be saved
-	InitialValue int    `json:"initial_value" default:"1"` // Build number used when no object found in S3
+	InitialValue string `json:"initial_value" default:"1"` // Build number used when no object found in S3
 	DoBump       bool   `json:"bump"`                      // True if the version should be bumped before it's returned
 }
 
@@ -50,7 +52,12 @@ type BuildNumberStorage struct {
 
 // Reset sets the version back to b.InitialValue
 func (b *BuildNumberStorage) Reset() error {
-	b.buildNumber = b.Source.InitialValue
+	initialValue, err := strconv.Atoi(b.Source.InitialValue)
+	if err != nil {
+		return err
+	}
+
+	b.buildNumber = initialValue
 	return b.Backend.Write(b.buildNumber)
 }
 

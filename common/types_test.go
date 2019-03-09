@@ -10,7 +10,7 @@ var TestSource = SourceS3{
 	UseSSL:       true,
 	Bucket:       "xxx",
 	Project:      "test",
-	InitialValue: 1,
+	InitialValue: "1",
 }
 
 func TestBuildNumberStorage_Reset(t *testing.T) {

@@ -24,10 +24,10 @@ func TestLoad(t *testing.T) {
 			"use_ssl": true,
 			"bucket": "builds.bucket",
 			"project": "test",
-			"initial_value": 1
+			"initial_value": "1"
 		},
 		"version": {
-			"num": 1
+			"num": "1"
 		}
 	}
 	`))
@@ -45,10 +45,10 @@ func TestLoad(t *testing.T) {
 			UseSSL:       true,
 			Bucket:       "builds.bucket",
 			Project:      "test",
-			InitialValue: 1,
+			InitialValue: "1",
 		},
 		Version: Version{
-			BuildNumber: 1,
+			BuildNumber: "1",
 		},
 	}
 

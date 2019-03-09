@@ -3,3 +3,4 @@
 vendor/
 test.sh
 bin/
+pipeline.yml
