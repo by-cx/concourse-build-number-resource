@@ -17,10 +17,16 @@ type BackendInterface interface {
 	Write(buildNumber int) error
 }
 
+//MetadataField is used to pass metadata to Concourse
+type MetadataField struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
 // InOut is struct used to format output of IN and OUT commands
 type InOut struct {
-	Version  Version           `json:"version"`
-	Metadata map[string]string `json:"metadata"`
+	Version  Version         `json:"version"`
+	Metadata []MetadataField `json:"metadata"`
 }
 
 // Version is used in output and input of the check command. It contains version compatible with Concourse format.
