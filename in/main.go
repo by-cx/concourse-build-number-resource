@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strconv"
 
 	"github.com/by-cx/concourse-build-number-resource/common"
 )
@@ -28,6 +29,25 @@ func main() {
 		os.Exit(1)
 	}
 
+	buildNumber := storage.Version.BuildNumber
+
+	// In case bump is needed, do a bump :)
+	if storage.Params.DoBump {
+		err = storage.Bump()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		number, err := storage.Get()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		buildNumber = strconv.Itoa(number)
+	}
+
+	// Writing the build number into a file
 	fmt.Fprintln(os.Stderr, "..writing the build number")
 	f, err := os.OpenFile(path.Join(directory, "build-number"), os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -35,7 +55,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	_, err = f.Write([]byte(storage.Version.BuildNumber))
+	_, err = f.Write([]byte(buildNumber))
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -43,7 +63,6 @@ func main() {
 
 	// Return saved build number
 	fmt.Fprintln(os.Stderr, "..handling output to Concourse")
-	buildNumber := storage.Version.BuildNumber
 	response := &common.InOut{
 		Version: common.Version{BuildNumber: buildNumber},
 		Metadata: []common.MetadataField{

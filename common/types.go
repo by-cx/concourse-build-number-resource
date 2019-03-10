@@ -17,6 +17,11 @@ type BackendInterface interface {
 	Write(buildNumber int) error
 }
 
+// Params contains parameters from Concourse passed from IN task
+type Params struct {
+	DoBump bool `json:"bump"` // True if the version should be bumped it's gotten
+}
+
 //MetadataField is used to pass metadata to Concourse
 type MetadataField struct {
 	Name  string `json:"name"`
@@ -32,10 +37,6 @@ type InOut struct {
 // Version is used in output and input of the check command. It contains version compatible with Concourse format.
 type Version struct {
 	BuildNumber string `json:"num"`
-}
-
-// Params is coming from Concurs in "in" and "out" commands
-type Params struct {
 }
 
 // SourceS3 contains configuration to access the build number storage
