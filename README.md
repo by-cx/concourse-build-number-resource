@@ -56,20 +56,25 @@ Usage in the jobs is easy:
     jobs:
       - name: some-job
         plan:
-        - get: build-number # Read lastest build number
+        - get: build-number # Read latest build number
+          params:
+            bump: true
         - ... something important
         - put: build-number # Bump the build number up for next time
 
 ## Check
 
-Returns last version. If *bump/ parameter is **true** then it bumps the number
-up. I prefer to use OUT instead of this but it depends on the usage.
+Returns last version. If *bump* parameter is **true** then it bumps the number
+up. I prefer to use IN before docker image is building instead of this but it's
+completely up to you.
 
 ## IN
 
 Downloads current version number and saves it into file called:
 
     build-number
+
+If *bump* parameter is **true** the build number is increased by 1.
 
 ## OUT
 
