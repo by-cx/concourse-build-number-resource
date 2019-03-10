@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+	fmt.Fprintln(os.Stderr, "OUT")
 	// var directory string
 	// if len(os.Args) > 1 {
 	// 	directory = os.Args[1]

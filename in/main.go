@@ -6,12 +6,13 @@ import (
 	"io"
 	"os"
 	"path"
-	"strconv"
 
 	"github.com/by-cx/concourse-build-number-resource/common"
 )
 
 func main() {
+	fmt.Fprintln(os.Stderr, "IN")
+	fmt.Fprintln(os.Stderr, ".. processing output directory")
 	var directory string
 	if len(os.Args) > 1 {
 		directory = os.Args[1]
@@ -21,12 +22,14 @@ func main() {
 	}
 
 	// Read input from Concourse
+	fmt.Fprintln(os.Stderr, "..loading input data from stdin")
 	storage, err := common.Load(os.Stdin)
 	if err != nil && err != io.EOF {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 
+	fmt.Fprintln(os.Stderr, "..writing the build number")
 	f, err := os.OpenFile(path.Join(directory, "build-number"), os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -40,17 +43,15 @@ func main() {
 	}
 
 	// Return saved build number
-	buildNumber, err := storage.Get()
-
+	fmt.Fprintln(os.Stderr, "..handling output to Concourse")
+	buildNumber := storage.Version.BuildNumber
 	response := &common.InOut{
-		Version: common.Version{strconv.Itoa(buildNumber)},
+		Version:  common.Version{BuildNumber: buildNumber},
+		Metadata: map[string]string{"ver": buildNumber},
 	}
 
-	data, err := json.Marshal(response)
-	if err != nil && err != io.EOF {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
+	//fmt.Fprintln(os.Stderr, string(data))
+	//fmt.Fprintln(os.Stderr, "{\"version\":{\"num\":\"3\"}}")
 
-	fmt.Println(string(data))
+	json.NewEncoder(os.Stdout).Encode(response)
 }

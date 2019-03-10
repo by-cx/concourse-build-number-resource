@@ -11,19 +11,22 @@ const bufferSize = 1024
 
 // Load processes stdin from Concourse
 func Load(input *os.File) (*BuildNumberStorage, error) {
-	var buffer = make([]byte, bufferSize)
+	var buffer string
 
 	var storage = &BuildNumberStorage{}
 
-	reader := bufio.NewReader(input)
-
-	n, err := reader.Read(buffer)
+	scanner := bufio.NewScanner(input)
+	for scanner.Scan() {
+		buffer += scanner.Text()
+	}
+	err := scanner.Err()
 	if err != nil {
 		return storage, err
 	}
-	fmt.Println(string(buffer))
 
-	err = json.Unmarshal(buffer[0:n], storage)
+	fmt.Fprint(os.Stderr, string(buffer))
+
+	err = json.Unmarshal([]byte(buffer), storage)
 	if err != nil {
 		return storage, err
 	}

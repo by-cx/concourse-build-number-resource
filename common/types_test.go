@@ -28,7 +28,7 @@ func TestBuildNumberStorage_Reset(t *testing.T) {
 			"Reset test",
 			fields{
 				Source:  TestSource,
-				Backend: &DummyBackend{},
+				Backend: &DummyBackend{Exists: true},
 			},
 			false,
 		},
@@ -64,7 +64,7 @@ func TestBuildNumberStorage_Get(t *testing.T) {
 			"Get test",
 			fields{
 				Source:  TestSource,
-				Backend: &DummyBackend{BuildNumber: 123},
+				Backend: &DummyBackend{BuildNumber: 123, Exists: true},
 			},
 			123,
 			false,
@@ -106,7 +106,7 @@ func TestBuildNumberStorage_Bump(t *testing.T) {
 			"Bump test",
 			fields{
 				Source:  TestSource,
-				Backend: &DummyBackend{BuildNumber: 2},
+				Backend: &DummyBackend{BuildNumber: 2, Exists: true},
 			},
 			3,
 			false,

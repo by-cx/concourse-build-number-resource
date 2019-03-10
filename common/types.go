@@ -1,7 +1,10 @@
 // Package common contains common code for all three Concourse commands (check, in, out).
 package common
 
-import "strconv"
+import (
+	"runtime/debug"
+	"strconv"
+)
 
 // ObjectName where build number is saved
 const ObjectName = "build-number"
@@ -10,12 +13,14 @@ const ObjectName = "build-number"
 type BackendInterface interface {
 	Delete() error
 	Read() (int, error)
+	IsExist() (bool, error)
 	Write(buildNumber int) error
 }
 
 // InOut is struct used to format output of IN and OUT commands
 type InOut struct {
-	Version Version `json:"version"`
+	Version  Version           `json:"version"`
+	Metadata map[string]string `json:"metadata"`
 }
 
 // Version is used in output and input of the check command. It contains version compatible with Concourse format.
@@ -66,7 +71,27 @@ func (b *BuildNumberStorage) Get() (int, error) {
 	loadedBuildNumber, err := b.Backend.Read()
 	b.buildNumber = loadedBuildNumber
 
+	exists, err := b.Backend.IsExist()
 	if err != nil {
+		debug.PrintStack()
+		return b.buildNumber, err
+	}
+	if !exists {
+		buildNumber, err := strconv.Atoi(b.Source.InitialValue)
+		if err != nil {
+			debug.PrintStack()
+			return b.buildNumber, err
+		}
+		b.buildNumber = buildNumber
+		err = b.Backend.Write(buildNumber)
+		if err != nil {
+			debug.PrintStack()
+		}
+		return buildNumber, err
+	}
+
+	if err != nil {
+		debug.PrintStack()
 		return -1, err
 	}
 	return b.buildNumber, nil

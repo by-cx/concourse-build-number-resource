@@ -2,6 +2,7 @@ package common
 
 import (
 	"io/ioutil"
+	"runtime/debug"
 	"strconv"
 	"strings"
 
@@ -31,14 +32,17 @@ func (s *S3Backend) getClient() (*minio.Client, error) {
 func (s *S3Backend) IsExist() (bool, error) {
 	client, err := s.getClient()
 	if err != nil {
+		debug.PrintStack()
 		return false, err
 	}
 
 	_, err = client.StatObject(s.Source.Bucket, s.Source.Project+"/"+ObjectName, minio.StatObjectOptions{})
 	if err != nil {
 		if err.Error() == "The specified key does not exist." {
+			debug.PrintStack()
 			return false, nil
 		}
+		debug.PrintStack()
 		return false, err
 	}
 	return true, nil
