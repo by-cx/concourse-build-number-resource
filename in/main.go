@@ -45,6 +45,13 @@ func main() {
 			os.Exit(1)
 		}
 		buildNumber = strconv.Itoa(number)
+	} else { // and if not we just get the value from the storage
+		number, err := storage.Get()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		buildNumber = strconv.Itoa(number)
 	}
 
 	// Writing the build number into a file

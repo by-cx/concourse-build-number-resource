@@ -4,6 +4,11 @@ This is simpler version of [semver](https://github.com/concourse/semver-resource
 Compare to that *semver*, this one produces only build numbers so the versioning
 is simpler and you don't have to handle bumping of multiple numbers in your CI.
 
+On the other hand I combine both tools because I need a lot of builds per day
+for my applications but real release is done only a few times per year. It's
+for environments where agile development is installed and it can also help
+to create releases in case of need.
+
 Feel free to post support for other new backends (only S3 is supported right now)
 or support for *YEAR.BUILD* format. That's something I would like to add but I
 don't need in near future.
