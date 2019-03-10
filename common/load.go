@@ -3,7 +3,6 @@ package common
 import (
 	"bufio"
 	"encoding/json"
-	"fmt"
 	"os"
 )
 
@@ -24,7 +23,7 @@ func Load(input *os.File) (*BuildNumberStorage, error) {
 		return storage, err
 	}
 
-	fmt.Fprint(os.Stderr, string(buffer))
+	//fmt.Fprint(os.Stderr, string(buffer))
 
 	err = json.Unmarshal([]byte(buffer), storage)
 	if err != nil {

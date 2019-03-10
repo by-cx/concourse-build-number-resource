@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"path"
 
@@ -24,7 +23,7 @@ func main() {
 	// Read input from Concourse
 	fmt.Fprintln(os.Stderr, "..loading input data from stdin")
 	storage, err := common.Load(os.Stdin)
-	if err != nil && err != io.EOF {
+	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
@@ -46,12 +45,14 @@ func main() {
 	fmt.Fprintln(os.Stderr, "..handling output to Concourse")
 	buildNumber := storage.Version.BuildNumber
 	response := &common.InOut{
-		Version:  common.Version{BuildNumber: buildNumber},
-		Metadata: map[string]string{"ver": buildNumber},
+		Version: common.Version{BuildNumber: buildNumber},
+		Metadata: []common.MetadataField{
+			{
+				Name:  "ver",
+				Value: buildNumber,
+			},
+		},
 	}
-
-	//fmt.Fprintln(os.Stderr, string(data))
-	//fmt.Fprintln(os.Stderr, "{\"version\":{\"num\":\"3\"}}")
 
 	json.NewEncoder(os.Stdout).Encode(response)
 }
